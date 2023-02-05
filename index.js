@@ -11,7 +11,13 @@ const { errorHandler, notFound } = require("./middlewares/notFound");
 require("./config/db");
 
 // middlewares :
-app.use(cors());
+app.use(cors({
+	origin: '*',
+	credentials: true
+}))
+
+app.use(express.urlencoded())
+app.use(cors())
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
