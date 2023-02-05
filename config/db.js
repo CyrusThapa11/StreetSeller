@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.mongo_URI);
-
-    console.log(`mongodb connected, ${conn.connection.host}`);
-  } catch (error) {
-    console.log("ERROR IS ", error.message);
-  }
-};
-module.exports = connectDB;
+mongoose
+  .connect(process.env.mongo_URI, {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("MongoDB Connected…");
+  })
+  .catch((err) => {
+    console.log(err);
+    console.log("err.reason.servers", err.reason.servers);
+  });

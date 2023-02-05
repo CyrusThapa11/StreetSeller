@@ -6,15 +6,18 @@ const {
   createProduct,
   allProducts,
   showOneProduct,
+  getSellerProduct,
 } = require("../controllers/product");
+const { authenticate, isSeller } = require("../middlewares/authMidware");
 
 const router = express.Router();
 
-router.route("/").get(allProducts).post(createProduct);
+router.route("/").get(allProducts).post(authenticate, isSeller, createProduct);
+router.route("/seller/:id").get(authenticate, getSellerProduct);
 router
   .route("/:id")
   .get(showOneProduct)
-  .patch(updateProduct)
-  .delete(deleteProduct);
+  .patch(authenticate, isSeller, updateProduct)
+  .delete(authenticate, isSeller, deleteProduct);
 
 module.exports = router;

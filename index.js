@@ -8,8 +8,7 @@ const app = express();
 // const { errorHandler, notFound } = require("./config/errorMware");
 const { errorHandler, notFound } = require("./middlewares/notFound");
 
-const connectDB = require("./config/db");
-connectDB();
+require("./config/db");
 
 // middlewares :
 app.use(cors());
@@ -25,20 +24,25 @@ const sellerRoutes = require("./routes/sellerRoutes");
 const authRoutes = require("./routes/index");
 const dataRoutes = require("./data/index");
 const orderRoutes = require("./routes/orderRoutes");
+const categoryRoutes = require("./routes/category");
+const subcategoryRoutes = require("./routes/subcategory");
 
 app.get("/", (req, res) => {
   res.send("Running api");
 });
 
-app.use("/api/auth", authRoutes);
+// app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/seller", sellerRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/adddata", dataRoutes);
-app.use("/api/config/paypal", (req, res) => {
-  res.send(process.env.PAYPAL_CLIENT_ID);
-});
+app.use("/api/category", categoryRoutes);
+app.use("/api/subcategory", subcategoryRoutes);
+
+// app.use("/api/config/paypal", (req, res) => {
+//   res.send(process.env.PAYPAL_CLIENT_ID);
+// });
 
 // ERROR HANDLERS :
 app.use(notFound);

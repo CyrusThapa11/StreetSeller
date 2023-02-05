@@ -1,17 +1,22 @@
+const AppError = require("./AppError");
+
 const notFound = (req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
+  const error = new AppError(`Not Found - ${req.originalUrl}`, 401);
   // res.status(404);
   console.log("error notFound", error);
   next(error);
 };
 
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  console.log("err.statusCode", err.statusCode);
+  let statusCode = err.statusCode || 500;
+  let message = err.message || " Internal Server Error.... ";
   console.log("statusCode", statusCode);
   console.log("error errorHandler --", err.message);
+  console.log("error errorHandler  message--", message);
   res.status(statusCode).json({
-    message: err.message,
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    message: message,
   });
 };
 module.exports = { errorHandler, notFound };

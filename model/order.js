@@ -10,13 +10,12 @@ const orderModel = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    // seller: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: "Seller",
-    //   },
-    // ],
+    // 63d7c02aaaa1611b61feb815 seller
+    seller: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Seller",
+    },
     OrderItems: [
       {
         productID: {
@@ -24,22 +23,16 @@ const orderModel = mongoose.Schema(
           required: true,
           ref: "Product",
         },
-        name: { type: String, required: true },
+        count: { type: Number },
+        price: { type: Number },
         image: { type: String },
-        cartProdcutQuantity: { type: Number, required: true },
-        price: { type: Number, required: true },
-        seller: { type: Schema.Types.ObjectId, required: true, ref: "Seller" },
       },
     ],
-    paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      update_time: { type: String },
-      email_address: { type: String },
-    },
+    cartQuantity: { type: Number, required: true },
     totalPrice: { type: Number },
     isPaid: { type: Boolean, default: false },
     PaidAt: { type: Date },
+    dispatch: { type: Boolean, default: false },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Boolean },
   },

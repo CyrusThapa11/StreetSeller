@@ -13,6 +13,6 @@ const router = express.Router();
 router.route("/login").post(login);
 router.route("/signup").post(signup);
 router.route("/logout").post(logout);
-router.route("/profile").post(authenticate, getUserDetails);
-
+router.route("/profile").post(getUserDetails);
+// authenticate
 module.exports = router;

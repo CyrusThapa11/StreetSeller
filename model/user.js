@@ -6,7 +6,7 @@ const userModel = mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    locality: { type: String },
+    city: { type: String },
     image: {
       type: String,
       default:
@@ -20,6 +20,7 @@ const userModel = mongoose.Schema(
         ref: "Order",
       },
     ],
+    // address: { type: String },
   },
   { timestamps: true }
 );

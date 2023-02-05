@@ -1,38 +1,80 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 const Seller = require("../model/seller");
-const expressAsyncHandler = require("express-async-handler");
+const AppError = require("./AppError");
 
-const authenticate = expressAsyncHandler(async (req, res, next) => {
-  // console.log("checking authenticate !");
-  // console.log("req.headers.authorization !", req.headers.authorization);
-  let token = "";
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    console.log("found !");
+const authenticate = async (req, res, next) => {
+  try {
+    let token = "";
+    console.log("req.headers", req.headers);
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      console.log("found !");
 
-    try {
       token = req.headers.authorization.split(" ")[1];
 
       // console.log("token", token);
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // req.body.userIDD = decoded.id;
-      // const { isSeller, userID } = req.body;
-      // console.log("decoded.id", decoded.id);
-      // console.log("isSeller", isSeller);
-      // console.log("userID", userID);
-      return next();
-    } catch (error) {
-      res.status(401);
-      console.log("error in authentication !", error.message);
-      throw new Error("Not authorized ,token Expired !");
-    }
-  } else if (!token) {
-    res.status(401);
-    throw new Error("Not authorized , no token !");
-  }
-});
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        console.log("decoded", decoded);
+        console.log("err", err);
+        if (err !== undefined && err !== null) {
+          return next(new AppError("Invalid credentials", 402));
+        } else {
+          console.log(" here ");
+          return next();
+        }
+      });
 
-module.exports = authenticate;
+      // console.log("error in authentication !", error.message);
+
+      // return next(new AppError("Not authorized ,token Expired !"));
+    } else {
+      return next(new AppError("Not authorized, token Not found !", 403));
+    }
+  } catch (error) {
+    console.log("error in authenticate", error.message);
+    return next(new AppError(error.message, 401));
+  }
+};
+
+const isSeller = async (req, res, next) => {
+  try {
+    if (req.body.isAdmin === true) return next();
+    if (
+      req.body.isSeller !== null ||
+      req.body.isSeller === undefined ||
+      req.body.isSeller === false
+    )
+      return next(new AppError("You are not authorized to do this"));
+    else return next();
+  } catch (error) {
+    next(new AppError("Something went wrong in server", 402));
+  }
+};
+
+const isAdmin = async (req, res, next) => {
+  try {
+    if (
+      req.body.isAdmin === undefined ||
+      req.body.isAdmin === null ||
+      req.body.isAdmin === false
+    )
+      return next(new AppError("You are not authorized to do this", 403));
+    else return next();
+  } catch (error) {
+    next(new AppError("Something went wrong in server", 402));
+  }
+};
+
+// const isOwner = (async (req, res, next) => {
+//   try {
+//     if (req.body.isAdmin === 0)
+//       return next(new AppError("You are not authorized to do this"));
+//   } catch (error) {
+//     next(new AppError("Something went wrong in server", 402));
+//   }
+// });
+
+module.exports = { authenticate, isSeller, isAdmin };

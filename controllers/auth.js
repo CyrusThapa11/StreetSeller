@@ -10,7 +10,7 @@ const Order = require("../model/order");
 const { findById } = require("../model/user");
 
 const login = asyncHandler(async (req, res) => {
-  let { email, password, isAdmin, isSeller } = req.body;
+  let { email, password, isSeller } = req.body;
   // console.log(
   //   "email, password, isAdmin, isSeller FROM BACKEND !!",
   //   email,
@@ -18,11 +18,6 @@ const login = asyncHandler(async (req, res) => {
   //   isAdmin,
   //   isSeller
   // );
-
-  isSeller = JSON.parse(isSeller);
-  // console.log("isSeller ka value h ", isSeller);
-  // console.log("typeof", typeof isSeller);
-  // console.log("typeof isSeller", typeof isSeller);
 
   try {
     if (isSeller === true) {
