@@ -6,7 +6,8 @@ const AppError = require("./AppError");
 const authenticate = async (req, res, next) => {
   try {
     let token = "";
-    console.log("req.headers", req.headers);
+    // console.log("req.headers", req.headers);
+
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
@@ -41,27 +42,30 @@ const authenticate = async (req, res, next) => {
 
 const isSeller = async (req, res, next) => {
   try {
+    console.log("req.body--> ", req.body);
+
     if (req.body.isAdmin === true) return next();
     if (
-      req.body.isSeller !== null ||
+      req.body.isSeller === null ||
       req.body.isSeller === undefined ||
       req.body.isSeller === false
-    )
-      return next(new AppError("You are not authorized to do this"));
-    else return next();
+    ) {
+      return next(new AppError("You are not a seller ", 403));
+    } else return next();
   } catch (error) {
-    next(new AppError("Something went wrong in server", 402));
+    return next(new AppError("Something went wrong in server", 402));
   }
 };
 
 const isAdmin = async (req, res, next) => {
   try {
+    console.log("req.body--> ", req.body);
     if (
       req.body.isAdmin === undefined ||
       req.body.isAdmin === null ||
       req.body.isAdmin === false
     )
-      return next(new AppError("You are not authorized to do this", 403));
+      return next(new AppError("You are not admin ", 403));
     else return next();
   } catch (error) {
     next(new AppError("Something went wrong in server", 402));
